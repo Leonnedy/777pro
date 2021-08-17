@@ -1,19 +1,13 @@
-let handler = m => m
-
-let linkRegex = /chat.whatsapp.com\/(?:invite\/)?([0-9A-Za-z]{20,24})/i
-handler.before = function (m, { isAdmin, isBotAdmin }) {
-  if (m.isBaileys && m.fromMe) return true
-  let chat = global.db.data.chats[m.chat]
-  let isGroupLink = linkRegex.exec(m.text)
-
-  if (chat.antiLink && isGroupLink) {
-    m.reply('Eliminar!!\n\nchinga tu madre spamer')
-    if (global.opts['restrict']) {
-      if (isAdmin || !isBotAdmin) return true
-      // this.groupRemove(m.chat, [m.sender])
-    }
-  }
-  return true
+let handler = async (m, { conn }) => {
+  let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+  conn.sendFile(m.chat, global.API('https://some-random-api.ml', '/canvas/gay', {
+    avatar: await conn.getProfilePicture(who).catch(_ => 'https://telegra.ph/file/24fa902ead26340f3df2c.png'),
+  }), 'gay.png', 'aqui esta el gei, pateenlo', m)
 }
+
+handler.help = ['gay']
+handler.tags = ['maker']
+
+handler.command = /^(gay)$/i
 
 module.exports = handler
